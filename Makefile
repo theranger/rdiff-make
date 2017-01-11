@@ -30,6 +30,14 @@ $(RDB_DIR):
 etc: $(RDB_BIN)
 	$(RDB) /etc $(BCP_USER)@$(BCP_HOST)::etc
 
+.PHONY home
+home: $(RDB_BIN)
+	$(RDB) /home $(BCP_USER)@$(BCP_HOST)::home
+
+.PHONY opt
+opt: $(RDB_BIN)
+	$(RDB) /opt $(BCP_USER)@$(BCP_HOST)::opt
+
 .PHONY: srv
 srv: $(RDB_BIN)
 	$(RDB) /srv $(BCP_USER)@$(BCP_HOST)::srv
