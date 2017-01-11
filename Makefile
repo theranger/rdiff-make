@@ -30,11 +30,11 @@ $(RDB_DIR):
 etc: $(RDB_BIN)
 	$(RDB) /etc $(BCP_USER)@$(BCP_HOST)::etc
 
-.PHONY home
+.PHONY: home
 home: $(RDB_BIN)
 	$(RDB) /home $(BCP_USER)@$(BCP_HOST)::home
 
-.PHONY opt
+.PHONY: opt
 opt: $(RDB_BIN)
 	$(RDB) /opt $(BCP_USER)@$(BCP_HOST)::opt
 
@@ -59,6 +59,10 @@ mysqldump: $(MYSQL) $(MYSQLDUMP) $(MYSQL_DIR)
 
 dpkg: $(RDB_DIR)
 	@dpkg --get-selections > $</dpkg-selections.txt
+
+.PHONY: update
+update:
+	wget -O Makefile https://raw.githubusercontent.com/theranger/rdiff-make/master/Makefile
 
 .PHONY: clean
 clean:
