@@ -12,7 +12,7 @@ MYSQL_PASS ?= dumppassword
 #                                                            #
 ##############################################################
 
-VERSION := 0.2.0
+VERSION := 0.2.1
 RDB_DIR := /srv/backup
 RDB_BIN := /usr/bin/rdiff-backup
 RDB := $(RDB_BIN) --ssh-no-compression
@@ -27,7 +27,7 @@ MONGO_DIR := $(RDB_DIR)/mongo
 all: help
 
 $(RDB_DIR):
-	mkdir -p $@
+	mkdir -p -m 0700 $@
 
 .PHONY: etc
 etc: $(RDB_BIN)
@@ -45,10 +45,10 @@ opt: $(RDB_BIN)
 srv: $(RDB_BIN)
 	$(RDB) /srv $(BCP_USER)@$(BCP_HOST)::srv
 
-$(MYSQL_DIR):
+$(MYSQL_DIR): $(RDB_DIR)
 	mkdir -p $@
 
-$(MONGO_DIR):
+$(MONGO_DIR): $(RDB_DIR)
 	mkdir -p $@
 
 .PHONY: mysqldump
