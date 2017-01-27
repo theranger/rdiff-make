@@ -12,7 +12,7 @@ MYSQL_PASS ?= dumppassword
 #                                                            #
 ##############################################################
 
-VERSION := 0.2.1
+VERSION := 0.3.1
 RDB_DIR := /srv/backup
 RDB_BIN := /usr/bin/rdiff-backup
 RDB := $(RDB_BIN) --ssh-no-compression
@@ -23,6 +23,10 @@ MYSQL_DIR := $(RDB_DIR)/mysql
 
 MONGODUMP := /usr/bin/mongodump
 MONGO_DIR := $(RDB_DIR)/mongo
+
+SLAPCAT := /usr/sbin/slapcat
+LDAP_DIR := $(RDB_DIR)/ldap
+
 
 all: help
 
@@ -51,6 +55,9 @@ $(MYSQL_DIR): $(RDB_DIR)
 $(MONGO_DIR): $(RDB_DIR)
 	mkdir -p $@
 
+$(LDAP_DIR): $(RDB_DIR)
+	mkdir -p $@
+
 .PHONY: mysqldump
 mysqldump: $(MYSQL) $(MYSQLDUMP) $(MYSQL_DIR)
 	@for db in $$(echo 'show databases;' | $(MYSQL) -s -u$(MYSQL_USER) -p$(MYSQL_PASS)) ; do \
@@ -66,6 +73,11 @@ mysqldump: $(MYSQL) $(MYSQLDUMP) $(MYSQL_DIR)
 .PHONY: mongodump
 mongodump: $(MONGODUMP) $(MONGO_DIR)
 	$(MONGODUMP) -o $(MONGO_DIR)
+
+.PHONY: slapcat
+slapcat: $(SLAPCAT) $(LDAP_DIR)
+	$(SLAPCAT) -l $(LDAP_DIR)/data.ldif
+
 
 dpkg: $(RDB_DIR)
 	@dpkg --get-selections > $</dpkg-selections.txt
